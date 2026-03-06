@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Placement Tracker</title>
+
+    <style>
+
+        body{
+        font-family: Arial;
+        background:#f5f6fa;
+        margin:0;
+        }
+
+        header{
+        background:#2f3640;
+        color:white;
+        padding:20px;
+        text-align:center;
+        font-size:24px;
+        }
+
+        .container{
+        width:80%;
+        margin:auto;
+        margin-top:30px;
+        }
+
+        .card{
+        background:white;
+        padding:20px;
+        margin-bottom:20px;
+        border-radius:10px;
+        box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input{
+        padding:10px;
+        margin:5px;
+        width:200px;
+        }
+
+        button{
+        padding:10px 15px;
+        background:#0984e3;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+        }
+
+        button:hover{
+        background:#0652DD;
+        }
+
+        table{
+        width:100%;
+        margin-top:10px;
+        border-collapse:collapse;
+        }
+
+        th,td{
+        padding:10px;
+        border-bottom:1px solid #ddd;
+        text-align:left;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    Placement Tracker Dashboard
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h3>Add Student</h3>
+
+        <input id="sname" placeholder="Student Name">
+        <input id="semail" placeholder="Email">
+        <input id="sbranch" placeholder="Branch">
+
+        <button onclick="addStudent()">Add</button>
+    </div>
+
+    <div class="card">
+        <h3>Add Company</h3>
+
+        <input id="cname" placeholder="Company Name">
+        <input id="crole" placeholder="Role">
+        <input id="cpackage" placeholder="Package">
+
+        <button onclick="addCompany()">Add</button>
+    </div>
+
+    <div class="card">
+        <h3>Students</h3>
+        <table id="studentTable">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Branch</th>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<script>
+
+    function addStudent(){
+
+    fetch('/students',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+    name:document.getElementById("sname").value,
+    email:document.getElementById("semail").value,
+    branch:document.getElementById("sbranch").value
+    })
+    }).then(()=>loadStudents())
+
+    }
+
+    function loadStudents(){
+
+    fetch('/students')
+    .then(res=>res.json())
+    .then(data=>{
+
+    let table=document.getElementById("studentTable")
+
+    table.innerHTML=
+    "<tr><th>ID</th><th>Name</th><th>Email</th><th>Branch</th></tr>"
+
+    data.forEach(s=>{
+
+    table.innerHTML+=
+    `<tr>
+    <td>${s.id}</td>
+    <td>${s.name}</td>
+    <td>${s.email}</td>
+    <td>${s.branch}</td>
+    </tr>`
+
+    })
+
+    })
+
+    }
+
+    function addCompany(){
+
+    fetch('/companies',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+    name:document.getElementById("cname").value,
+    role:document.getElementById("crole").value,
+    packageAmount:document.getElementById("cpackage").value
+    })
+    })
+
+    }
+
+    loadStudents()
+
+</script>
+
+</body>
+</html>
